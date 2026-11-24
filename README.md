@@ -43,6 +43,15 @@ to run on Linux.
 
 * Only works with sockets.
 * Edge-triggered (`EPOLLET`) mode isn't supported.
+* Like the original wepoll, this module relies on undocumented Windows
+  internals: it opens `\Device\Afd` via `NtCreateFile`, issues `IOCTL_AFD_POLL`,
+  and dynamically loads `ntdll.dll` functions. Microsoft does not guarantee
+  the stability of these interfaces. The same technique is used by libuv
+  (Node.js), mio/Tokio, polling/smol/async-std and ZeroMQ, so it is widely
+  deployed in practice, but it is a real trade-off. See
+  [this overview](https://notgull.net/device-afd/) and Microsoft's
+  [warning about calling internal APIs](https://learn.microsoft.com/en-us/windows/win32/devnotes/calling-internal-apis).
+  It may also be problematic under Wine or in UWP apps.
 
 ## How to use
 
